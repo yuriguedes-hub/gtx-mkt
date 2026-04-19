@@ -84,8 +84,75 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .btn-ghost:hover{background:rgba(255,255,255,.04);border-color:var(--fg-3)}
 
   /* HERO */
-  .hero{position:relative;padding:80px 0 60px}
-  .hero-bar{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+  .hero{position:relative;padding:80px 0 60px;overflow:hidden}
+
+  /* Black hole — concentric rings + glow behind hero */
+  .black-hole{
+    position:absolute;top:-100px;left:-180px;width:900px;height:900px;
+    pointer-events:none;z-index:0;
+  }
+  .black-hole .ring{
+    position:absolute;top:50%;left:50%;border-radius:50%;
+    transform:translate(-50%,-50%);
+    border:1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    mask-image:linear-gradient(180deg, var(--accent) 0%, transparent 35%);
+    -webkit-mask-image:linear-gradient(180deg, var(--accent) 0%, transparent 35%);
+    animation:bh-spin 40s linear infinite;
+  }
+  .black-hole .ring:nth-child(1){width:200px;height:200px;animation-duration:25s}
+  .black-hole .ring:nth-child(2){width:340px;height:340px;animation-duration:35s;animation-direction:reverse;opacity:.8}
+  .black-hole .ring:nth-child(3){width:500px;height:500px;animation-duration:50s;opacity:.6}
+  .black-hole .ring:nth-child(4){width:680px;height:680px;animation-duration:70s;animation-direction:reverse;opacity:.4}
+  .black-hole .ring:nth-child(5){width:860px;height:860px;animation-duration:90s;opacity:.25}
+  .black-hole .core{
+    position:absolute;top:50%;left:50%;width:300px;height:300px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, var(--accent) 0%, transparent 60%);
+    filter:blur(60px);opacity:.5;
+  }
+  .black-hole .ring .dot{
+    position:absolute;top:0;left:50%;width:6px;height:6px;border-radius:50%;
+    background:var(--accent);transform:translate(-50%,-50%);
+    box-shadow:0 0 12px var(--accent), 0 0 24px var(--accent-glow);
+  }
+  @keyframes bh-spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+  /* Rising stars */
+  .stars{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .stars span{
+    position:absolute;bottom:-10px;width:2px;height:2px;border-radius:50%;
+    background:var(--fg);opacity:.5;
+    animation:rise linear infinite;
+  }
+  .stars span.lg{width:3px;height:3px;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+  @keyframes rise{
+    0%{transform:translateY(0);opacity:0}
+    10%{opacity:.6}
+    90%{opacity:.6}
+    100%{transform:translateY(-110vh);opacity:0}
+  }
+
+  /* Floating KPI cards over hero */
+  .float-card{
+    position:absolute;background:var(--bg-1);border:1px solid var(--line-2);border-radius:10px;
+    padding:12px 14px;font-family:var(--mono);z-index:3;pointer-events:none;
+    box-shadow:0 20px 50px -10px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 30px -8px var(--accent-glow);
+    animation:float 6s ease-in-out infinite;
+    backdrop-filter:blur(10px);
+    min-width:140px;
+  }
+  .float-card .fc-k{font-size:9px;color:var(--fg-2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+  .float-card .fc-v{font-size:18px;color:var(--fg);font-weight:600;letter-spacing:-.01em;font-family:var(--sans)}
+  .float-card .fc-d{font-size:9px;color:var(--accent);margin-top:2px;letter-spacing:.06em}
+  .float-card .fc-mini{display:flex;gap:1px;align-items:flex-end;height:14px;margin-top:6px}
+  .float-card .fc-mini i{display:block;width:3px;background:var(--accent);opacity:.7;border-radius:1px}
+
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+  }
+
+  .hero-bar{display:flex;align-items:center;gap:12px;margin-bottom:28px;position:relative;z-index:2}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
   .hero h1{
     font-size:clamp(44px, 7vw, 104px);
@@ -264,6 +331,92 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .tweaks-panel.show{display:block}
   .tweaks-panel h5{margin:0 0 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);font-weight:400}
   .tweak-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
+    display:none;align-items:center;justify-content:center;padding:24px;
+    opacity:0;transition:opacity .25s;
+  }
+  .modal-overlay.show{display:flex;opacity:1}
+  .modal{
+    width:100%;max-width:640px;max-height:92vh;overflow-y:auto;
+    background:var(--bg-1);border:1px solid var(--line-2);border-radius:16px;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.02) inset;
+    transform:translateY(20px) scale(.98);transition:transform .3s;
+    position:relative;
+  }
+  .modal-overlay.show .modal{transform:none}
+  .modal::before{
+    content:"";position:absolute;inset:-1px;border-radius:16px;pointer-events:none;
+    background:radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 50%);opacity:.5;
+  }
+  .modal-head{position:relative;padding:32px 36px 24px;border-bottom:1px solid var(--line)}
+  .modal-head .eyebrow{margin-bottom:14px}
+  .modal-head h3{font-size:28px;letter-spacing:-.02em;font-weight:500;margin:0 0 8px;line-height:1.1}
+  .modal-head p{color:var(--fg-2);font-size:13px;line-height:1.5;margin:0;max-width:480px}
+  .modal-close{
+    position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;
+    background:transparent;border:1px solid var(--line-2);color:var(--fg);
+    display:grid;place-items:center;cursor:pointer;transition:all .2s;
+  }
+  .modal-close:hover{background:var(--accent);border-color:var(--accent);color:#000}
+  .modal-body{padding:28px 36px 32px;position:relative}
+  .field{margin-bottom:20px}
+  .field label{
+    display:block;font-family:var(--mono);font-size:10px;color:var(--fg-2);
+    letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;
+  }
+  .field label .req{color:var(--accent)}
+  .field input[type=text],.field input[type=tel],.field select{
+    width:100%;background:var(--bg-2);border:1px solid var(--line-2);border-radius:8px;
+    padding:13px 14px;color:var(--fg);font-family:var(--sans);font-size:14px;
+    transition:border-color .2s, background .2s;outline:none;
+    appearance:none;-webkit-appearance:none;
+  }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1 L6 6 L11 1' stroke='%23ff6a1a' stroke-width='1.5' fill='none'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
+  }
+  .field input:focus,.field select:focus{border-color:var(--accent);background:#0c0c14}
+  .field input::placeholder{color:var(--fg-3)}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .radio-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .radio-group label{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 10px;border:1px solid var(--line-2);border-radius:8px;
+    background:var(--bg-2);cursor:pointer;transition:all .15s;text-align:center;
+    color:var(--fg-2);font-family:var(--sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;
+  }
+  .radio-group label:hover{border-color:var(--fg-3);color:var(--fg)}
+  .radio-group input{position:absolute;opacity:0;pointer-events:none}
+  .radio-group input:checked + label{
+    background:color-mix(in oklab, var(--accent) 15%, var(--bg-2));
+    border-color:var(--accent);color:var(--fg);
+    box-shadow:0 0 0 1px var(--accent);
+  }
+  .radio-group .opt{position:relative}
+  .modal-submit{
+    width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;
+    padding:16px 22px;font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.04em;cursor:pointer;margin-top:8px;
+    transition:filter .2s, box-shadow .2s;
+    box-shadow:0 0 24px -6px var(--accent-glow);
+  }
+  .modal-submit:hover{filter:brightness(1.1);box-shadow:0 0 40px -4px var(--accent-glow)}
+  .modal-foot{
+    text-align:center;font-family:var(--mono);font-size:10px;color:var(--fg-3);
+    letter-spacing:.1em;text-transform:uppercase;margin-top:14px;
+  }
+  .modal-success{display:none;padding:60px 36px;text-align:center}
+  .modal-success.show{display:block}
+  .modal-success .check{
+    width:64px;height:64px;border-radius:50%;background:var(--accent);
+    display:grid;place-items:center;margin:0 auto 24px;
+    box-shadow:0 0 40px -6px var(--accent-glow);
+  }
+  .modal-success h3{font-size:28px;font-weight:500;letter-spacing:-.02em;margin:0 0 12px}
+  .modal-success p{color:var(--fg-2);line-height:1.55;margin:0 auto 24px;max-width:380px}
   .tweak-row:last-child{border:none}
   .swatch-row{display:flex;gap:6px}
   .sw{width:22px;height:22px;border-radius:6px;border:1px solid var(--line-2);cursor:pointer;transition:transform .15s}
@@ -304,14 +457,26 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
         <span style="display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:6px;box-shadow:0 0 8px #00ff88"></span>
         ACEITANDO PROJETOS
       </span>
-      <a class="btn btn-primary" href="#contato">Agendar diagnóstico →</a>
+      <button class="btn btn-primary" data-open-modal>Agendar diagnóstico →</button>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <header class="hero wrap" data-screen-label="hero">
-  <div class="hero-grid">
+  <!-- Black hole rings -->
+  <div class="black-hole" aria-hidden="true">
+    <div class="core"></div>
+    <div class="ring"><span class="dot"></span></div>
+    <div class="ring"><span class="dot"></span></div>
+    <div class="ring"><span class="dot"></span></div>
+    <div class="ring"><span class="dot"></span></div>
+    <div class="ring"><span class="dot"></span></div>
+  </div>
+  <!-- Rising stars -->
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <div class="hero-grid" style="position:relative;z-index:2">
     <div>
       <div class="hero-bar">
         <span class="dot"></span>
@@ -320,7 +485,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <h1>Marketing não<br>se faz no achismo.<br><em>Se faz com dados.</em></h1>
       <p class="hero-sub">Somos a agência de performance para empresários que tratam o marketing como centro de custo que precisa gerar retorno. Tráfego pago, CRM e automação, rodando como um só sistema operacional de receita.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="#contato">Agendar diagnóstico gratuito →</a>
+        <button class="btn btn-primary" data-open-modal>Agendar diagnóstico gratuito →</button>
         <a class="btn btn-ghost" href="#servicos">Ver serviços</a>
       </div>
       <div class="hero-meta">
@@ -382,10 +547,10 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <div class="eyebrow">01 — Serviços</div>
+        <div class="eyebrow"></div>
         <h2>Três pilares. Um sistema de receita.</h2>
       </div>
-      <div class="right">Não vendemos serviços isolados. Operamos a sua máquina de aquisição como uma engenharia integrada — desde o clique até o fechamento.</div>
+      <div class="right">Não vendemos serviços isolados. Operamos a sua máquina de aquisição como uma engenharia integrada desde o clique até o fechamento.</div>
     </div>
 
     <div class="services reveal">
@@ -400,7 +565,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
         </div>
         <div style="margin-top:24px"><span class="svc-num">[ 01 / TRÁFEGO ]</span></div>
         <h3>Tráfego Pago</h3>
-        <p>Estratégia, criativo e gestão de mídia em Meta, Google, TikTok e LinkedIn. Não otimizamos para métricas de vaidade — otimizamos para receita, margem e LTV.</p>
+        <p>Estratégia, criativo e gestão de mídia em Meta, Google, TikTok e LinkedIn. Não otimizamos para métricas de vaidade otimizamos para receita, margem e LTV.</p>
         <ul>
           <li>Meta / Google / TikTok</li>
           <li>Matriz de criativos</li>
@@ -461,7 +626,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
         <div class="eyebrow">02 — Processo</div>
         <h2>Do diagnóstico à escala, em 4 estágios.</h2>
       </div>
-      <div class="right">Um método replicável, auditável e mensurável. Zero surpresa no meio do caminho — você sempre sabe em qual estágio estamos e o que vem a seguir.</div>
+      <div class="right">Um método replicável, auditável e mensurável. Zero surpresa no meio do caminho você sempre sabe em qual estágio estamos e o que vem a seguir.</div>
     </div>
 
     <div class="process reveal">
@@ -598,7 +763,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <div class="reveal">
         <div class="eyebrow">06 — FAQ</div>
         <h2 style="font-size:clamp(32px,4.2vw,56px);line-height:1;letter-spacing:-.03em;font-weight:500;margin:12px 0 20px">Perguntas que você deveria fazer.</h2>
-        <p style="color:var(--fg-2);line-height:1.6;max-width:380px">Nada de promessa vazia. Se sua dúvida não está aqui, agende 30 minutos com a gente — é gratuito.</p>
+        <p style="color:var(--fg-2);line-height:1.6;max-width:380px">Nada de promessa vazia. Se sua dúvida não está aqui, agende 30 minutos com a gente é gratuito.</p>
       </div>
       <div class="faq-list reveal">
         <div class="faq-item open">
@@ -637,7 +802,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <p>30 minutos. Sem apresentação comercial. A gente olha sua conta de mídia, funil e CRM, e te devolve um diagnóstico de 3 oportunidades concretas.</p>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
-          <a class="btn btn-primary" href="#" style="font-size:13px;padding:16px 22px">Agendar diagnóstico gratuito →</a>
+          <button class="btn btn-primary" data-open-modal style="font-size:13px;padding:16px 22px">Agendar diagnóstico gratuito →</button>
           <a class="btn btn-ghost" href="#" style="font-size:13px;padding:16px 22px">Falar no WhatsApp</a>
           <div class="mono" style="font-size:10px;color:var(--fg-3);letter-spacing:.1em;margin-top:12px">NENHUMA INFORMAÇÃO COMERCIAL · APENAS DIAGNÓSTICO</div>
         </div>
@@ -680,6 +845,118 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     </div>
   </div>
 </footer>
+
+<!-- MODAL DE QUALIFICAÇÃO -->
+<div class="modal-overlay" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <button class="modal-close" data-close-modal aria-label="Fechar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1 L13 13 M13 1 L1 13"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="eyebrow">Diagnóstico Gratuito</div>
+      <h3 id="modalTitle">Vamos olhar sua operação juntos.</h3>
+      <p>Preencha em 2 minutos. Em até 24h um especialista entra em contato no WhatsApp para agendar a sessão.</p>
+    </div>
+    <form class="modal-body" id="leadForm">
+      <div class="field-row">
+        <div class="field">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" name="nome" required placeholder="Como devemos te chamar"/>
+        </div>
+        <div class="field">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input type="tel" name="whatsapp" required placeholder="(11) 9 0000-0000" id="phoneField"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Empresa <span class="req">*</span></label>
+        <input type="text" name="empresa" required placeholder="Nome da empresa"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Nicho / Segmento <span class="req">*</span></label>
+          <select name="nicho" required>
+            <option value="">Selecione...</option>
+            <option>Automotivo</option>
+            <option>Estética / Saúde</option>
+            <option>Jurídico</option>
+            <option>Imobiliário</option>
+            <option>Educação</option>
+            <option>E-commerce</option>
+            <option>Serviços B2B</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Faturamento mensal <span class="req">*</span></label>
+          <select name="faturamento" required>
+            <option value="">Selecione...</option>
+            <option>Até R$ 30k</option>
+            <option>R$ 30k – 100k</option>
+            <option>R$ 100k – 300k</option>
+            <option>Acima de R$ 300k</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Já investe em tráfego pago? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="opt"><input type="radio" name="trafego" value="Sim" id="t1" required><label for="t1">Sim</label></div>
+          <div class="opt"><input type="radio" name="trafego" value="Não" id="t2"><label for="t2">Não</label></div>
+          <div class="opt"><input type="radio" name="trafego" value="Já investi mas parei" id="t3"><label for="t3">Já investi, parei</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Já usou CRM? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="opt"><input type="radio" name="crm" value="Sim, uso hoje" id="c1" required><label for="c1">Sim, uso hoje</label></div>
+          <div class="opt"><input type="radio" name="crm" value="Já usei" id="c2"><label for="c2">Já usei</label></div>
+          <div class="opt"><input type="radio" name="crm" value="Nunca usei" id="c3"><label for="c3">Nunca usei</label></div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Maior dor hoje <span class="req">*</span></label>
+          <select name="dor" required>
+            <option value="">Selecione...</option>
+            <option>Gerar mais leads</option>
+            <option>Converter melhor</option>
+            <option>Organizar o processo de vendas</option>
+            <option>Automatizar atendimento</option>
+            <option>Tudo junto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Como nos encontrou <span class="req">*</span></label>
+          <select name="origem" required>
+            <option value="">Selecione...</option>
+            <option>Instagram</option>
+            <option>Indicação</option>
+            <option>Google</option>
+            <option>LinkedIn</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="modal-submit">Quero meu diagnóstico gratuito →</button>
+      <div class="modal-foot">Sem spam · Sem ligações automáticas · Apenas WhatsApp</div>
+    </form>
+    <div class="modal-success" id="successPane">
+      <div class="check">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 14 L11 20 L23 8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Recebido. <span style="color:var(--accent)">Agora é com a gente.</span></h3>
+      <p>Estamos abrindo o WhatsApp pra você concluir o agendamento. Se nada acontecer em 3 segundos, clique no botão abaixo.</p>
+      <a href="#" id="waLink" class="btn btn-primary" style="font-size:13px;padding:14px 22px">Abrir WhatsApp →</a>
+    </div>
+  </div>
+</div>
 
 <!-- TWEAKS -->
 <div class="tweaks-panel" id="tweaks">
@@ -881,6 +1158,83 @@ const stepsIO = new IntersectionObserver((entries)=>{
 },{threshold:.3});
 const proc = document.querySelector('.process');
 if(proc) stepsIO.observe(proc);
+
+// === Rising stars ===
+(function(){
+  const host = document.getElementById('stars');
+  if(!host) return;
+  const N = 40;
+  for(let i=0;i<N;i++){
+    const s = document.createElement('span');
+    if(Math.random() < .15) s.classList.add('lg');
+    s.style.left = Math.random()*100 + '%';
+    s.style.animationDuration = (8 + Math.random()*16) + 's';
+    s.style.animationDelay = (-Math.random()*20) + 's';
+    host.appendChild(s);
+  }
+})();
+
+// === MODAL DE QUALIFICAÇÃO ===
+(function(){
+  const WHATSAPP_NUMBER = '5511900000000'; // ← trocar pelo número real
+  const overlay = document.getElementById('leadModal');
+  const form = document.getElementById('leadForm');
+  const success = document.getElementById('successPane');
+  const waLink = document.getElementById('waLink');
+  const phone = document.getElementById('phoneField');
+
+  function openModal(){
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    form.style.display = '';
+    success.classList.remove('show');
+    setTimeout(()=> form.querySelector('input[name=nome]')?.focus(), 200);
+  }
+  function closeModal(){
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+    setTimeout(()=>{ form.reset(); }, 300);
+  }
+
+  document.querySelectorAll('[data-open-modal]').forEach(btn=>{
+    btn.addEventListener('click', e=>{ e.preventDefault(); openModal(); });
+  });
+  document.querySelectorAll('[data-close-modal]').forEach(btn=>{
+    btn.addEventListener('click', closeModal);
+  });
+  overlay.addEventListener('click', e=>{ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay.classList.contains('show')) closeModal(); });
+
+  // Phone mask
+  phone.addEventListener('input', e=>{
+    let v = e.target.value.replace(/\D/g,'').slice(0,11);
+    if(v.length > 10) v = v.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2 $3-$4');
+    else if(v.length > 6) v = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+    else if(v.length > 2) v = v.replace(/(\d{2})(\d+)/, '($1) $2');
+    e.target.value = v.trim().replace(/-$/, '');
+  });
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    const msg =
+      `Olá, GTX/MKT! Quero agendar meu diagnóstico gratuito.%0A%0A` +
+      `*Nome:* ${data.nome}%0A` +
+      `*Empresa:* ${data.empresa}%0A` +
+      `*WhatsApp:* ${data.whatsapp}%0A` +
+      `*Nicho:* ${data.nicho}%0A` +
+      `*Faturamento mensal:* ${data.faturamento}%0A` +
+      `*Tráfego pago:* ${data.trafego}%0A` +
+      `*CRM:* ${data.crm}%0A` +
+      `*Maior dor:* ${data.dor}%0A` +
+      `*Como me encontrou:* ${data.origem}`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    waLink.href = url;
+    form.style.display = 'none';
+    success.classList.add('show');
+    setTimeout(()=>{ window.open(url, '_blank'); }, 1200);
+  });
+})();
 </script>
 </body>
 </html>
