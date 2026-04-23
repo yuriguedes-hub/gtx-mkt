@@ -17,14 +17,14 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 </script>
 <style>
   :root{
-    --bg:#07070a;
-    --bg-1:#0b0b10;
-    --bg-2:#101018;
-    --fg:#f6f6f4;
-    --fg-2:#9b9ba3;
-    --fg-3:#5b5b63;
-    --line:rgba(255,255,255,.08);
-    --line-2:rgba(255,255,255,.14);
+    --bg:#ffffff;
+    --bg-1:#fafafa;
+    --bg-2:#f2f2f4;
+    --fg:#0a0a0e;
+    --fg-2:#55555e;
+    --fg-3:#9b9ba3;
+    --line:rgba(0,0,0,.08);
+    --line-2:rgba(0,0,0,.14);
     --accent:#ff6a1a;
     --accent-glow: color-mix(in oklab, var(--accent) 60%, transparent);
     --mono:"JetBrains Mono", ui-monospace, monospace;
@@ -48,8 +48,8 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     mask-image: radial-gradient(ellipse at 50% 20%, #000 40%, transparent 80%);
   }
   .noise{
-    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.25;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.08;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
   .wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 32px}
@@ -88,12 +88,12 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     transition:all .2s;border:none;
   }
   .btn-primary{
-    background:var(--accent);color:#0a0a0a;border:1px solid var(--accent);
-    box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 0 24px -6px var(--accent-glow);
+    background:var(--accent);color:#ffffff;border:1px solid var(--accent);
+    box-shadow:0 0 0 1px rgba(0,0,0,.04), 0 0 24px -6px var(--accent-glow);
   }
-  .btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 0 40px -4px var(--accent-glow)}
+  .btn-primary:hover{filter:brightness(1.05);box-shadow:0 0 0 1px rgba(0,0,0,.04), 0 0 40px -4px var(--accent-glow)}
   .btn-ghost{border:1px solid var(--line-2);color:var(--fg);background:transparent}
-  .btn-ghost:hover{background:rgba(255,255,255,.04);border-color:var(--fg-3)}
+  .btn-ghost:hover{background:rgba(0,0,0,.04);border-color:var(--fg-3)}
 
   /* Hamburger */
   .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;cursor:pointer;z-index:60}
@@ -151,7 +151,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .stars{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
   .stars span{
     position:absolute;bottom:-10px;width:2px;height:2px;border-radius:50%;
-    background:var(--fg);opacity:.5;
+    background:rgba(0,0,0,.3);opacity:.5;
     animation:rise linear infinite;
   }
   .stars span.lg{width:3px;height:3px;background:var(--accent);box-shadow:0 0 6px var(--accent)}
@@ -215,9 +215,10 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .crosshair{position:absolute;top:0;bottom:0;width:1px;background:var(--accent);opacity:0;pointer-events:none;transition:opacity .15s}
   .crosshair.on{opacity:.6}
   .tooltip{
-    position:absolute;padding:8px 10px;border-radius:6px;background:#000;border:1px solid var(--accent);
+    position:absolute;padding:8px 10px;border-radius:6px;background:#fff;border:1px solid var(--accent);
     font-family:var(--mono);font-size:10px;color:var(--fg);pointer-events:none;opacity:0;transform:translate(-50%,-110%);
     transition:opacity .15s;white-space:nowrap;z-index:3;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
   }
   .tooltip.on{opacity:1}
   .tooltip .acc{color:var(--accent)}
@@ -296,14 +297,14 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .faq-q{display:flex;justify-content:space-between;align-items:center;gap:20px}
   .faq-q h4{margin:0;font-size:clamp(15px,2vw,18px);font-weight:500;letter-spacing:-.01em}
   .faq-icon{width:24px;height:24px;border:1px solid var(--line-2);border-radius:50%;display:grid;place-items:center;flex-shrink:0;transition:all .2s}
-  .faq-item.open .faq-icon{background:var(--accent);border-color:var(--accent);color:#000}
+  .faq-item.open .faq-icon{background:var(--accent);border-color:var(--accent);color:#fff}
   .faq-item.open .faq-icon svg{transform:rotate(45deg)}
   .faq-icon svg{transition:transform .3s;width:10px;height:10px}
   .faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;color:var(--fg-2);font-size:14px;line-height:1.6}
   .faq-item.open .faq-a{max-height:200px;margin-top:14px}
 
   /* Final CTA */
-  .final{position:relative;border:1px solid var(--line-2);border-radius:20px;padding:60px 40px;overflow:hidden;background:linear-gradient(140deg,var(--bg-1) 0%, #0c0c14 100%)}
+  .final{position:relative;border:1px solid var(--line-2);border-radius:20px;padding:60px 40px;overflow:hidden;background:linear-gradient(140deg,var(--bg-1) 0%, #f4f4f6 100%)}
   .final::before{content:"";position:absolute;inset:-1px;border-radius:20px;pointer-events:none;background:radial-gradient(circle at 20% 100%, var(--accent-glow), transparent 50%);opacity:.6}
   .final-inner{position:relative;display:grid;grid-template-columns:1.3fr .7fr;gap:48px;align-items:end}
   .final h2{font-size:clamp(32px,5.5vw,84px);line-height:.95;letter-spacing:-.035em;font-weight:500;margin:0 0 24px}
@@ -349,7 +350,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     display:grid;place-items:center;cursor:pointer;transition:all .2s;
     z-index:10;
   }
-  .modal-close:hover{background:var(--accent);border-color:var(--accent);color:#000}
+  .modal-close:hover{background:var(--accent);border-color:var(--accent);color:#fff}
   .modal-body{padding:24px 28px 28px;position:relative}
   .field{margin-bottom:18px}
   .field label{display:block;font-family:var(--mono);font-size:10px;color:var(--fg-2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
@@ -364,7 +365,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1 L6 6 L11 1' stroke='%23ff6a1a' stroke-width='1.5' fill='none'/></svg>");
     background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
   }
-  .field input:focus,.field select:focus{border-color:var(--accent);background:#0c0c14}
+  .field input:focus,.field select:focus{border-color:var(--accent);background:#fff}
   .field input::placeholder{color:var(--fg-3)}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .radio-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -379,7 +380,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .radio-group input:checked + label{background:color-mix(in oklab, var(--accent) 15%, var(--bg-2));border-color:var(--accent);color:var(--fg);box-shadow:0 0 0 1px var(--accent)}
   .radio-group .opt{position:relative}
   .modal-submit{
-    width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;
+    width:100%;background:var(--accent);color:#ffffff;border:none;border-radius:8px;
     padding:16px 22px;font-family:var(--mono);font-size:13px;font-weight:600;
     letter-spacing:.04em;cursor:pointer;margin-top:8px;
     transition:filter .2s, box-shadow .2s;
@@ -591,16 +592,16 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
               <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <g stroke="rgba(255,255,255,.06)" stroke-dasharray="2 4">
+          <g stroke="rgba(0,0,0,.08)" stroke-dasharray="2 4">
             <line x1="0" y1="40" x2="600" y2="40"/>
             <line x1="0" y1="80" x2="600" y2="80"/>
             <line x1="0" y1="120" x2="600" y2="120"/>
             <line x1="0" y1="160" x2="600" y2="160"/>
           </g>
-          <path id="line2" d="" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.2"/>
+          <path id="line2" d="" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.2"/>
           <path id="area1" d="" fill="url(#g1)"/>
           <path id="line1" d="" fill="none" stroke="var(--accent)" stroke-width="2"/>
-          <circle id="hoverDot" r="4" fill="var(--accent)" stroke="#000" stroke-width="2" opacity="0"/>
+          <circle id="hoverDot" r="4" fill="var(--accent)" stroke="#fff" stroke-width="2" opacity="0"/>
         </svg>
         <div class="crosshair" id="crosshair"></div>
         <div class="tooltip" id="tooltip"></div>
@@ -923,7 +924,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <div class="modal-foot">Sem spam · Sem ligações automáticas · Apenas WhatsApp</div>
     </form>
     <div class="modal-success" id="successPane">
-      <div class="check"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 14 L11 20 L23 8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="check"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 14 L11 20 L23 8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Recebido. <span style="color:var(--accent)">Agora é com a gente.</span></h3>
       <p>Estamos abrindo o WhatsApp. Se nada acontecer em 3 segundos, clique abaixo.</p>
       <a href="#" id="waLink" class="btn btn-primary" style="font-size:13px;padding:14px 22px">Abrir WhatsApp →</a>
