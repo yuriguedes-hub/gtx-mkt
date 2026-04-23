@@ -70,7 +70,17 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .nav-links a{font-size:13px;color:var(--fg-2);transition:color .2s}
   .nav-links a:hover{color:var(--fg)}
   .nav-cta-group{display:flex;gap:10px;align-items:center}
-  .nav-status{font-size:11px;color:var(--fg-2);font-family:var(--mono);display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .nav-status{
+    font-size:11px;color:var(--fg-2);font-family:var(--mono);
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    background:none;border:1px solid var(--line-2);padding:7px 12px;border-radius:999px;
+    cursor:pointer;transition:all .2s;
+  }
+  .nav-status:hover{border-color:var(--accent);color:var(--fg)}
+  .nav-status .pulse-dot{
+    display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;
+    box-shadow:0 0 8px var(--accent);animation:pulse 1.6s infinite;
+  }
   .btn{
     display:inline-flex;align-items:center;gap:10px;
     padding:10px 16px;border-radius:6px;
@@ -167,10 +177,17 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
   .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
   .hero-sub{color:var(--fg-2);font-size:17px;line-height:1.55;max-width:520px;margin-bottom:36px}
-  .hero-ctas{display:flex;gap:12px;margin-bottom:56px;flex-wrap:wrap}
-  .hero-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding-top:32px;border-top:1px solid var(--line);max-width:560px}
+
+  /* Hero meta agora ACIMA dos CTAs */
+  .hero-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:24px 0 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:560px;margin-bottom:32px}
   .hero-meta .num{font-family:var(--sans);font-size:clamp(20px,3vw,28px);font-weight:600;letter-spacing:-.02em}
   .hero-meta .lbl{font-size:11px;color:var(--fg-2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .hero-microcopy{
+    font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.45);
+    letter-spacing:.02em;margin-top:14px;
+  }
 
   /* Dashboard */
   .dash{
@@ -243,6 +260,10 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   .case:hover{border-color:var(--line-2);transform:translateY(-2px)}
   .case.big{grid-row:span 2;min-height:auto;display:flex;flex-direction:column;justify-content:space-between}
   .case-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:var(--fg-2);letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap;gap:8px}
+  .case-sub{
+    font-style:italic;font-size:12px;color:rgba(255,255,255,0.4);
+    margin-top:8px;font-family:var(--sans);letter-spacing:0;text-transform:none;
+  }
   .case h3{font-size:clamp(22px,3vw,32px);font-weight:500;letter-spacing:-.02em;margin:32px 0 12px}
   .case.big h3{font-size:clamp(26px,4vw,44px)}
   .case .c-desc{color:var(--fg-2);font-size:14px;line-height:1.6;margin-bottom:24px}
@@ -310,14 +331,14 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
   .modal-overlay.show{display:flex;opacity:1}
   .modal{
-    width:100%;max-width:640px;max-height:92vh;overflow-y:auto;
+    width:100%;max-width:640px;max-height:92vh;overflow-y:auto;overflow-x:hidden;
     background:var(--bg-1);border:1px solid var(--line-2);border-radius:16px;
     box-shadow:0 40px 80px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.02) inset;
     transform:translateY(20px) scale(.98);transition:transform .3s;
-    position:relative;
+    position:relative;isolation:isolate;
   }
   .modal-overlay.show .modal{transform:none}
-  .modal::before{content:"";position:absolute;inset:-1px;border-radius:16px;pointer-events:none;background:radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 50%);opacity:.5}
+  .modal::before{content:"";position:absolute;inset:-1px;border-radius:16px;pointer-events:none;background:radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 50%);opacity:.5;z-index:-1}
   .modal-head{position:relative;padding:28px 28px 20px;border-bottom:1px solid var(--line)}
   .modal-head .eyebrow{margin-bottom:14px}
   .modal-head h3{font-size:clamp(22px,4vw,28px);letter-spacing:-.02em;font-weight:500;margin:0 0 8px;line-height:1.1}
@@ -326,6 +347,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;
     background:transparent;border:1px solid var(--line-2);color:var(--fg);
     display:grid;place-items:center;cursor:pointer;transition:all .2s;
+    z-index:10;
   }
   .modal-close:hover{background:var(--accent);border-color:var(--accent);color:#000}
   .modal-body{padding:24px 28px 28px;position:relative}
@@ -401,6 +423,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     .hero-meta{grid-template-columns:repeat(3,1fr);gap:16px;max-width:100%}
     .hero-meta .num{font-size:20px}
     .hero-meta .lbl{font-size:10px}
+    .hero-microcopy{text-align:center;font-size:11px}
 
     /* Dashboard - simplified on mobile */
     .dash{padding:16px}
@@ -496,10 +519,10 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta-group">
-      <span class="nav-status">
-        <span style="display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;box-shadow:0 0 8px #00ff88"></span>
-        ACEITANDO PROJETOS
-      </span>
+      <button type="button" class="nav-status" data-open-modal aria-label="Ver vagas de maio e agendar diagnóstico">
+        <span class="pulse-dot"></span>
+        2 VAGAS EM MAIO
+      </button>
       <button class="btn btn-primary" data-open-modal>Agendar diagnóstico →</button>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -534,19 +557,20 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     <div>
       <div class="hero-bar">
         <span class="dot"></span>
-        <span class="mono" style="font-size:11px;color:var(--fg-2);letter-spacing:.12em">[ V.04 — 2026 ] &nbsp; PERFORMANCE · CRM · AUTOMAÇÃO</span>
+        <span class="mono" style="font-size:11px;color:var(--fg-2);letter-spacing:.12em">[ V.04 · 2026 ] &nbsp; PERFORMANCE · CRM · AUTOMAÇÃO</span>
       </div>
-      <h1>Marketing não<br>se faz no achismo.<br><em>Se faz com dados.</em></h1>
-      <p class="hero-sub">Somos a agência de performance para empresários que tratam o marketing como centro de custo que precisa gerar retorno. Tráfego pago, CRM e automação, rodando como um só sistema operacional de receita.</p>
-      <div class="hero-ctas">
-        <button class="btn btn-primary" data-open-modal>Agendar diagnóstico gratuito →</button>
-        <a class="btn btn-ghost" href="#servicos">Ver serviços</a>
-      </div>
+      <h1>Sua verba em tráfego pago<br>está gerando receita<br><em>ou só gerando relatório?</em></h1>
+      <p class="hero-sub">Somos a agência que conecta anúncios, CRM e automação em um único sistema de receita. Sem achismo, sem promessa, apenas dados e resultado auditável.</p>
       <div class="hero-meta">
         <div><div class="num">R$ 84M+</div><div class="lbl">Em mídia gerida</div></div>
         <div><div class="num">3.2x</div><div class="lbl">ROAS médio</div></div>
         <div><div class="num">48</div><div class="lbl">Marcas ativas</div></div>
       </div>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" data-open-modal>Agendar diagnóstico gratuito →</button>
+        <a class="btn btn-ghost" href="#servicos">Ver serviços</a>
+      </div>
+      <div class="hero-microcopy">30 minutos · Sem proposta comercial · 3 oportunidades concretas de melhoria</div>
     </div>
 
     <div class="dash" id="dash">
@@ -593,7 +617,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <div class="eyebrow">01 — Serviços</div>
+        <div class="eyebrow">01 · Serviços</div>
         <h2>Três pilares. Um sistema de receita.</h2>
       </div>
       <div class="right">Não vendemos serviços isolados. Operamos a sua máquina de aquisição como uma engenharia integrada desde o clique até o fechamento.</div>
@@ -657,7 +681,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <div class="eyebrow">02 — Processo</div>
+        <div class="eyebrow">02 · Processo</div>
         <h2>Do diagnóstico à escala, em 4 estágios.</h2>
       </div>
       <div class="right">Um método replicável, auditável e mensurável. Você sempre sabe em qual estágio estamos e o que vem a seguir.</div>
@@ -690,7 +714,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 <!-- NÚMEROS -->
 <section style="padding:0;border:none">
   <div class="wrap" style="padding-top:72px;padding-bottom:40px">
-    <div class="eyebrow reveal">03 — Números</div>
+    <div class="eyebrow reveal">03 · Números</div>
     <h2 class="reveal" style="font-size:clamp(28px,4.2vw,60px);line-height:1;letter-spacing:-.03em;font-weight:500;margin:12px 0 48px;max-width:800px">Performance não é promessa.<br>É histórico.</h2>
   </div>
   <div class="wrap" style="padding-left:0;padding-right:0;overflow:hidden">
@@ -709,7 +733,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <div class="eyebrow">04 — Cases</div>
+        <div class="eyebrow">04 · Cases</div>
         <h2>Resultados que resistem à auditoria.</h2>
       </div>
       <div class="right">Amostra de marcas que passaram pelo nosso sistema. Todos os números são auditáveis via plataforma e CRM.</div>
@@ -718,7 +742,8 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       <div class="case big">
         <div>
           <div class="case-head"><span>[ E-COMMERCE / MODA ]</span><span>Q1 → Q4 2025</span></div>
-          <div class="case-visual">
+          <div class="case-sub">Marca de moda feminina, São Paulo</div>
+          <div class="case-visual" style="margin-top:24px">
             <svg viewBox="0 0 600 240" preserveAspectRatio="none" style="width:100%;height:100%">
               <defs><linearGradient id="cg1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity=".5"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
               <path d="M0,200 L100,180 L200,150 L300,110 L400,70 L500,40 L600,10 L600,240 L0,240 Z" fill="url(#cg1)"/>
@@ -736,6 +761,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       </div>
       <div class="case">
         <div class="case-head"><span>[ SAAS / B2B ]</span><span>8 meses</span></div>
+        <div class="case-sub">Software B2B de gestão logística</div>
         <h3>3.4x em MQLs</h3>
         <p class="c-desc">Campanhas LinkedIn + Google + automação de nutrição conectada ao Kommo. Pipeline qualificado triplicou.</p>
         <div class="case-stats">
@@ -745,6 +771,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       </div>
       <div class="case">
         <div class="case-head"><span>[ INFO-PRODUTO ]</span><span>6 meses</span></div>
+        <div class="case-sub">Curso online de finanças pessoais</div>
         <h3>R$ 4.2M em vendas</h3>
         <p class="c-desc">Funil de lançamento com Meta Ads + WhatsApp API. Automação de objeções reduziu ciclo de venda em 40%.</p>
         <div class="case-stats">
@@ -761,7 +788,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <div class="eyebrow">05 — Stack</div>
+        <div class="eyebrow">05 · Stack</div>
         <h2>Ferramentas certas para decisões rápidas.</h2>
       </div>
       <div class="right">Stack agnóstico. Usamos o que faz sentido pro seu estágio, não o que tem comissão maior.</div>
@@ -782,9 +809,9 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   <div class="wrap">
     <div class="faq">
       <div class="reveal">
-        <div class="eyebrow">06 — FAQ</div>
+        <div class="eyebrow">06 · FAQ</div>
         <h2 style="font-size:clamp(28px,4.2vw,56px);line-height:1;letter-spacing:-.03em;font-weight:500;margin:12px 0 20px">Perguntas que você deveria fazer.</h2>
-        <p style="color:var(--fg-2);line-height:1.6;max-width:380px">Nada de promessa vazia. Se sua dúvida não está aqui, agende 30 minutos com a gente é gratuito.</p>
+        <p style="color:var(--fg-2);line-height:1.6;max-width:380px">Nada de promessa vazia. Se sua dúvida não está aqui, agende 30 minutos com a gente, é gratuito.</p>
       </div>
       <div class="faq-list reveal">
         <div class="faq-item open">
@@ -818,7 +845,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     <div class="final reveal">
       <div class="final-inner">
         <div>
-          <div class="eyebrow">07 — Próximo passo</div>
+          <div class="eyebrow">07 · Próximo passo</div>
           <h2>Quer saber onde<br>seu <em>CAC está vazando?</em></h2>
           <p>30 minutos. Sem apresentação comercial. A gente olha sua conta de mídia, funil e CRM, e te devolve um diagnóstico de 3 oportunidades concretas.</p>
         </div>
@@ -861,7 +888,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 GTX MKT — Todos os direitos reservados</span>
+      <span>© 2026 GTX MKT · Todos os direitos reservados</span>
       <span>FORTALEZA · BRASIL · v.04.26</span>
     </div>
   </div>
@@ -870,71 +897,27 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 <!-- MODAL -->
 <div class="modal-overlay" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
-    <button class="modal-close" data-close-modal aria-label="Fechar">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1 L13 13 M13 1 L1 13"/></svg>
+    <button type="button" class="modal-close" data-close-modal aria-label="Fechar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" pointer-events="none"><path d="M1 1 L13 13 M13 1 L1 13"/></svg>
     </button>
     <div class="modal-head">
       <div class="eyebrow">Diagnóstico Gratuito</div>
       <h3 id="modalTitle">Vamos olhar sua operação juntos.</h3>
-      <p>Preencha em 2 minutos. Em até 24h um especialista entra em contato no WhatsApp.</p>
+      <p>Preencha em 1 minuto. Em até 24h um especialista entra em contato no WhatsApp.</p>
     </div>
     <form class="modal-body" id="leadForm">
       <div class="field-row">
         <div class="field"><label>Nome completo <span class="req">*</span></label><input type="text" name="nome" required placeholder="Como devemos te chamar"/></div>
         <div class="field"><label>WhatsApp <span class="req">*</span></label><input type="tel" name="whatsapp" required placeholder="(85) 9 0000-0000" id="phoneField"/></div>
       </div>
-      <div class="field"><label>Empresa <span class="req">*</span></label><input type="text" name="empresa" required placeholder="Nome da empresa"/></div>
-      <div class="field-row">
-        <div class="field">
-          <label>Nicho / Segmento <span class="req">*</span></label>
-          <select name="nicho" required>
-            <option value="">Selecione...</option>
-            <option>Automotivo</option><option>Estética / Saúde</option><option>Jurídico</option>
-            <option>Imobiliário</option><option>Educação</option><option>E-commerce</option>
-            <option>Serviços B2B</option><option>Outro</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Faturamento mensal <span class="req">*</span></label>
-          <select name="faturamento" required>
-            <option value="">Selecione...</option>
-            <option>Até R$ 30k</option><option>R$ 30k – 100k</option>
-            <option>R$ 100k – 300k</option><option>Acima de R$ 300k</option>
-          </select>
-        </div>
-      </div>
       <div class="field">
-        <label>Já investe em tráfego pago? <span class="req">*</span></label>
-        <div class="radio-group">
-          <div class="opt"><input type="radio" name="trafego" value="Sim" id="t1" required><label for="t1">Sim</label></div>
-          <div class="opt"><input type="radio" name="trafego" value="Não" id="t2"><label for="t2">Não</label></div>
-          <div class="opt"><input type="radio" name="trafego" value="Já investi mas parei" id="t3"><label for="t3">Já investi, parei</label></div>
-        </div>
-      </div>
-      <div class="field">
-        <label>Já usou CRM? <span class="req">*</span></label>
-        <div class="radio-group">
-          <div class="opt"><input type="radio" name="crm" value="Sim, uso hoje" id="c1" required><label for="c1">Sim, uso hoje</label></div>
-          <div class="opt"><input type="radio" name="crm" value="Já usei" id="c2"><label for="c2">Já usei</label></div>
-          <div class="opt"><input type="radio" name="crm" value="Nunca usei" id="c3"><label for="c3">Nunca usei</label></div>
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Maior dor hoje <span class="req">*</span></label>
-          <select name="dor" required>
-            <option value="">Selecione...</option>
-            <option>Gerar mais leads</option><option>Converter melhor</option>
-            <option>Organizar o processo de vendas</option><option>Automatizar atendimento</option><option>Tudo junto</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Como nos encontrou <span class="req">*</span></label>
-          <select name="origem" required>
-            <option value="">Selecione...</option>
-            <option>Instagram</option><option>Indicação</option><option>Google</option><option>LinkedIn</option><option>Outro</option>
-          </select>
-        </div>
+        <label>Nicho / Segmento <span class="req">*</span></label>
+        <select name="nicho" required>
+          <option value="">Selecione...</option>
+          <option>Automotivo</option><option>Estética / Saúde</option><option>Jurídico</option>
+          <option>Imobiliário</option><option>Educação</option><option>E-commerce</option>
+          <option>Serviços B2B</option><option>Outro</option>
+        </select>
       </div>
       <button type="submit" class="modal-submit">Quero meu diagnóstico gratuito →</button>
       <div class="modal-foot">Sem spam · Sem ligações automáticas · Apenas WhatsApp</div>
@@ -1062,7 +1045,7 @@ const proc=document.querySelector('.process');if(proc)stepsIO.observe(proc);
 
 // Modal
 (function(){
-  const WHATSAPP_NUMBER='5585900000000'; // ← trocar pelo número real
+  const WHATSAPP_NUMBER='5585999999999'; // ← trocar pelo número real
   const overlay=document.getElementById('leadModal');
   const form=document.getElementById('leadForm');
   const success=document.getElementById('successPane');
@@ -1071,7 +1054,10 @@ const proc=document.querySelector('.process');if(proc)stepsIO.observe(proc);
   function openModal(){overlay.classList.add('show');document.body.style.overflow='hidden';form.style.display='';success.classList.remove('show');setTimeout(()=>form.querySelector('input[name=nome]')?.focus(),200)}
   function closeModal(){overlay.classList.remove('show');document.body.style.overflow='';setTimeout(()=>form.reset(),300)}
   document.querySelectorAll('[data-open-modal]').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();openModal()}));
-  document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',closeModal));
+  document.addEventListener('click',e=>{
+    const closeBtn=e.target.closest('[data-close-modal]');
+    if(closeBtn){e.preventDefault();e.stopPropagation();closeModal()}
+  });
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))closeModal()});
   phone.addEventListener('input',e=>{
@@ -1084,7 +1070,7 @@ const proc=document.querySelector('.process');if(proc)stepsIO.observe(proc);
   form.addEventListener('submit',e=>{
     e.preventDefault();
     const data=Object.fromEntries(new FormData(form).entries());
-    const msg=`Olá, GTX/MKT! Quero agendar meu diagnóstico gratuito.%0A%0A*Nome:* ${data.nome}%0A*Empresa:* ${data.empresa}%0A*WhatsApp:* ${data.whatsapp}%0A*Nicho:* ${data.nicho}%0A*Faturamento:* ${data.faturamento}%0A*Tráfego pago:* ${data.trafego}%0A*CRM:* ${data.crm}%0A*Maior dor:* ${data.dor}%0A*Como me encontrou:* ${data.origem}`;
+    const msg=`Olá, GTX/MKT! Quero agendar meu diagnóstico gratuito.%0A%0A*Nome:* ${data.nome}%0A*WhatsApp:* ${data.whatsapp}%0A*Nicho:* ${data.nicho}`;
     const url=`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
     waLink.href=url;form.style.display='none';success.classList.add('show');
     setTimeout(()=>window.open(url,'_blank'),1200);
